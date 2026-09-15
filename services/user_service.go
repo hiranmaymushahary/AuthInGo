@@ -6,22 +6,22 @@ import (
 )
 
 type UserService interface {
-	Create() error
+	GetUserById() error
 }
 
 type UserServiceImpl struct {
 	userRepository db.UserRepository
 }
 
-func (u *UserServiceImpl) Create() error {
-	fmt.Println("Creating user in user service")
-	u.userRepository.Create()
+func (u *UserServiceImpl) GetUserById() error {
+	fmt.Println("Fetching user in UserService")
+	u.userRepository.GetByID()
 	return nil
-
 }
 
-func NewUserService(_userRepository db.UserRepository) UserService {
+// NewUserService creates and returns a new instance of UserService
+func NewUserService(ur db.UserRepository) UserService {
 	return &UserServiceImpl{
-		userRepository: _userRepository,
+		userRepository: ur,
 	}
 }

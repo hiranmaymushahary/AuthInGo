@@ -2,6 +2,7 @@ package main
 
 import (
 	"AuthInGo/app"
+
 	config "AuthInGo/config/env"
 )
 

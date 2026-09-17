@@ -5,6 +5,7 @@ import (
 	db "AuthInGo/db/repositories"
 	"AuthInGo/utils"
 	"fmt"
+	"AuthInGo/dto"
 
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -12,7 +13,7 @@ import (
 type UserService interface {
 	GetUserById() error
 	CreateUser() error
-	LogInUser() (string, error)
+	LogInUser(payload *dto.LoginUserRequestDTO) (string, error)
 }
 
 type UserServiceImpl struct {
@@ -47,9 +48,9 @@ func (u *UserServiceImpl) CreateUser() error {
 	return nil
 }
 
-func (u *UserServiceImpl) LogInUser() (string, error) {
-	email := "user1@example.com"
-	password := "example_password"
+func (u *UserServiceImpl) LogInUser(payload *dto.LoginUserRequestDTO) (string, error) {
+	email := payload.Email
+	password := payload.Password
 
 	// Step 1: Fetch user by email
 	user, err := u.userRepository.GetByEmail(email)
@@ -72,11 +73,11 @@ func (u *UserServiceImpl) LogInUser() (string, error) {
 	}
 
 	// Step 4: Generate JWT token upon successful authentication
-	payload := jwt.MapClaims{
+	jwtPayload := jwt.MapClaims{
 		"email": user.Email,
 		"id":    user.Id,
 	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwtPayload)
 
 	tokenString, err := token.SignedString([]byte(env.GetString("JWT_SECRET", "TOKEN")))
 	if err != nil {

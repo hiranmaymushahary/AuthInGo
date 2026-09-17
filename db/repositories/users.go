@@ -8,7 +8,8 @@ import (
 
 type UserRepository interface {
 	GetByID() (*models.User, error)
-	Create() error
+	Create(username string, email string, hashedPassword string) error
+	GetByEmail(email string) (*models.User, error)
 	GetAll() ([]*models.User, error)
 	DeleteByID(id int64) error
 }
@@ -31,11 +32,33 @@ func (u *UserRepositoryImpl) DeleteByID(id int64) error {
 	return nil
 }
 
-func (u *UserRepositoryImpl) Create() error {
+func (u *UserRepositoryImpl) GetByEmail(email string) (*models.User, error) {
+	query := "SELECT id , email , password FROM users WHERE email = ?"
+
+	row := u.db.QueryRow(query, email)
+
+	user := &models.User{}
+
+	err := row.Scan(&user.Id, &user.Email, &user.Password)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			fmt.Println("No user found with the given email")
+			return nil, err
+		} else {
+			fmt.Println("Error scanning user:", err)
+			return nil, err
+		}
+	}
+
+	return user, nil
+}
+
+func (u *UserRepositoryImpl) Create(username string, email string, hashedPassword string) error {
 	fmt.Println("Creating user in UserRepository")
 	query := "INSERT INTO users (username, email, password) VALUES (?, ?, ?)"
 
-	result, err := u.db.Exec(query, "testuser", "test@test.com", "password123")
+	result, err := u.db.Exec(query, username, email, hashedPassword)
 
 	if err != nil {
 		fmt.Println("Error inserting user:", err)

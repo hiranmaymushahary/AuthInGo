@@ -6,14 +6,16 @@ import (
 	"AuthInGo/utils"
 	"fmt"
 	"AuthInGo/dto"
+	"AuthInGo/models"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
 type UserService interface {
-	GetUserById() error
-	CreateUser() error
+	GetUserById(id int64) (*models.User, error)
+	CreateUser(payload *dto.CreateUserRequestDTO) (*models.User, error)
 	LogInUser(payload *dto.LoginUserRequestDTO) (string, error)
+	GetUserById(id int64) (*models.User, error)
 }
 
 type UserServiceImpl struct {
@@ -27,25 +29,42 @@ func NewUserService(ur db.UserRepository) UserService {
 	}
 }
 
-func (u *UserServiceImpl) GetUserById() error {
+func (u *UserServiceImpl) GetUserById(id int64)(*models.User) error {
 	fmt.Println("Fetching user in UserService")
-	u.userRepository.GetByID()
-	return nil
+
+	u.userRepository.GetByID(id)
+
+	if err != nil {
+		fmt.Println("Error fetching user:",err)
+		return nil, err
+	}
+	return user , nil
+
+
+	
 }
 
-func (u *UserServiceImpl) CreateUser() error {
+func (u *UserServiceImpl) CreateUser(payload *dto.CreateUserRequestDTO)(*models.User) error {
 	fmt.Println("Creating user in userService")
-	password := "example_password"
-	hashedPassword, err := utils.HashPassword(password)
+
+// Step 1.HASH THE PASSWORD USING utils.HashedPassword
+	hashedPassword, err := utils.HashPassword(payload.Password)
 	if err != nil {
-		return err
+		fmt.Println("Error hashing Password:",err)
+		return nil
 	}
-	u.userRepository.Create(
-		"username_example_1",
-		"user1@example.com",
-		hashedPassword,
-	)
-	return nil
+// Step 2. CALL THE REPOSITORY TO CREATE THE USER
+
+	user , err != u.userRepository.Create(payload.username , payload.Email , hashedPassword)
+	if err != nil {
+		fmt.Println("Error while creating user:" , err)
+		return nil ,err
+	}
+
+// RETURN THE CREATED USER
+	return user , nil
+
+
 }
 
 func (u *UserServiceImpl) LogInUser(payload *dto.LoginUserRequestDTO) (string, error) {

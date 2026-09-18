@@ -2,7 +2,7 @@ package routers
 
 import (
     "AuthInGo/controllers"
-
+    "AuthInGo/middlewares"
     "github.com/go-chi/chi/v5"
     "github.com/go-chi/chi/v5/middleware"
 )
@@ -18,6 +18,8 @@ func SetupRouter(UserRouter Router) *chi.Mux {
 
     // Built-in Chi middleware for logging requests
     chiRouter.Use(middleware.Logger)   
+
+    chiRouter.Use(middlewares.RateLimitMiddleware)
    
 
     // Route for basic server health check

@@ -12,7 +12,7 @@ import (
 )
 
 type UserService interface {
-    GetUserById(id int64) (*models.User, error)
+    GetUserById(id string) (*models.User, error)
     CreateUser(payload *dto.CreateUserRequestDTO) (*models.User, error)
     LogInUser(payload *dto.LogInUserRequestDTO) (string, error)
 }
@@ -28,7 +28,7 @@ func NewUserService(ur db.UserRepository) UserService {
     }
 }
 
-func (u *UserServiceImpl) GetUserById(id int64) (*models.User, error) {
+func (u *UserServiceImpl) GetUserById(id string) (*models.User, error) {
     fmt.Println("Fetching user in UserService")
 
     // Call the repository layer to fetch the user by ID and capture the result

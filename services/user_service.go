@@ -14,7 +14,7 @@ import (
 type UserService interface {
     GetUserById(id int64) (*models.User, error)
     CreateUser(payload *dto.CreateUserRequestDTO) (*models.User, error)
-    LogInUser(payload *dto.LoginUserRequestDTO) (string, error)
+    LogInUser(payload *dto.LogInUserRequestDTO) (string, error)
 }
 
 type UserServiceImpl struct {
@@ -63,7 +63,7 @@ func (u *UserServiceImpl) CreateUser(payload *dto.CreateUserRequestDTO) (*models
     return user, nil
 }
 
-func (u *UserServiceImpl) LogInUser(payload *dto.LoginUserRequestDTO) (string, error) {
+func (u *UserServiceImpl) LogInUser(payload *dto.LogInUserRequestDTO) (string, error) {
     email := payload.Email
     password := payload.Password
 

@@ -47,12 +47,7 @@ func (uc *UserController) GetUserById(w http.ResponseWriter, r *http.Request) {
 
 
 func (uc *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
-	var payload dto.CreateUserRequestDTO
-
-	if jsonErr := utils.ReadJsonBody(r, &payload); jsonErr != nil {
-		utils.WriteJsonErrorResponse(w, http.StatusBadRequest, "Something went wrong while creating user", jsonErr)
-		return
-	}
+	payload := r.Context().Value("payload").(dto.CreateUserRequestDTO)
 
 	fmt.Println("Payload received:", payload)
 
@@ -71,12 +66,9 @@ func (uc *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
 func (uc *UserController) LogInUser(w http.ResponseWriter, r *http.Request) {
 	
 
-	var payload dto.LoginUserRequestDTO
+	fmt.Println("Logging in user in UserController")
 
-	if jsonErr := utils.ReadJsonBody(r, &payload); jsonErr != nil {
-		utils.WriteJsonErrorResponse(w, http.StatusBadRequest, "Something went wrong while logging in", jsonErr)
-		return
-	}
+	payload := r.Context().Value("payload").(dto.LogInUserRequestDTO)
 
 	fmt.Println("Payload received:", payload)
 

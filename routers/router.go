@@ -1,29 +1,32 @@
 package routers
 
 import (
-	"AuthInGo/controllers"
+    "AuthInGo/controllers"
     "AuthInGo/middlewares"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+    "github.com/go-chi/chi/v5"
+    "github.com/go-chi/chi/v5/middleware"
 )
 
 type Router interface {
-	Register(r chi.Router)
+    Register(r chi.Router)
 }
 
-
+// SetupRouter initializes the router, configures middleware, and registers module routes
 func SetupRouter(UserRouter Router) *chi.Mux {
-    chirouter := chi.NewRouter()
+    // Standardized casing to chiRouter (camelCase)
+    chiRouter := chi.NewRouter()
 
     // Built-in Chi middleware for logging requests
     chiRouter.Use(middleware.Logger)   
     // Middleware for validating requests         
-	chiRouter.Use(middlewares.RequestValidator) 
+    chiRouter.Use(middlewares.RequestValidator) 
 
-    chirouter.Get("/ping", controllers.PingHandler)
+    // Route for basic server health check
+    chiRouter.Get("/ping", controllers.PingHandler)
 
-    UserRouter.Register(chirouter)
+    // Register user routes onto the main chi router
+    UserRouter.Register(chiRouter)
 
-    return chirouter
+    return chiRouter
 }

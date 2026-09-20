@@ -35,3 +35,5 @@ func SetupRouter(UserRouter Router) *chi.Mux {
 
     return chiRouter
 }
+
+// http://localhost:3001/fakestoreservice/products/category

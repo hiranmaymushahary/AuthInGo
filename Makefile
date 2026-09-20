@@ -1,7 +1,7 @@
 MIGRATIONS_FOLDER=db/migrations
 DB_URL=root:Hiranmay123@@tcp(127.0.0.1:3306)/auth_dev
 
-# Create a new migration -> gmake migrate-create name="create_entity_table
+# Create a new migration -> gmake migrate-create name="create_entity_table"
 migrate-create:
 	goose -dir $(MIGRATIONS_FOLDER) create $(name) sql
 

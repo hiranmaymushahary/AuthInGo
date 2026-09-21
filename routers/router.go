@@ -13,7 +13,7 @@ type Router interface {
 }
 
 // SetupRouter initializes the router, configures middleware, and registers module routes
-func SetupRouter(UserRouter Router) *chi.Mux {
+func SetupRouter(UserRouter Router , RoleRouter Router) *chi.Mux {
     // Standardized casing to chiRouter (camelCase)
     chiRouter := chi.NewRouter()
 
@@ -32,6 +32,8 @@ func SetupRouter(UserRouter Router) *chi.Mux {
 
     // Register user routes onto the main chi router
     UserRouter.Register(chiRouter)
+
+    RoleRouter.Register(chiRouter)
 
     return chiRouter
 }

@@ -134,30 +134,30 @@ func (u *UserRoleRepositoryImpl) HasRole(userId int64, roleName string) (bool, e
 
 func (u *UserRoleRepositoryImpl) HasAllRoles(userId int64, roleNames []string) (bool, error) {
 
-	if len(roleNames) == 0 {
-		return true, nil // If no roles are specified, return true
-	}
+    if len(roleNames) == 0 {
+        return true, nil // If no roles are specified, return true
+    }
 
-	query := `
-		SELECT COUNT(*) = ?
-		FROM user_roles ur
-		INNER JOIN roles r ON ur.role_id = r.id
-		WHERE ur.user_id = ? AND r.name IN (?)
-		GROUP BY ur.user_id`
+    query := `
+        SELECT COUNT(*) = ?
+        FROM user_roles ur
+        INNER JOIN roles r ON ur.role_id = r.id
+        WHERE ur.user_id = ? AND r.name IN (?)
+        GROUP BY ur.user_id`
 
-	roleNamesStr := strings.Join(roleNames, ",")
+    roleNamesStr := strings.Join(roleNames, ",")
 
-	row := u.db.QueryRow(query, len(roleNames), userId, roleNamesStr)
+    row := u.db.QueryRow(query, len(roleNames), userId, roleNamesStr)
 
-	var hasAllRoles bool
-	if err := row.Scan(&hasAllRoles); err != nil {
-		if err == sql.ErrNoRows {
-			return false, nil // No roles found for the user
-		}
-		return false, err // Return any other error
-	}
+    var hasAllRoles bool
+    if err := row.Scan(&hasAllRoles); err != nil {
+        if err == sql.ErrNoRows {
+            return false, nil // No roles found for the user
+        }
+        return false, err // Return any other error
+    }
 
-	return hasAllRoles, nil
+    return hasAllRoles, nil
 }
 
 func (u *UserRoleRepositoryImpl) HasAnyRole(userId int64, roleNames []string) (bool, error) {
